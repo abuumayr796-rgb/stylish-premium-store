@@ -1,16 +1,42 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import { useState } from "react";
+import { CartProvider } from "@/context/CartContext";
+import Header from "@/components/shop/Header";
+import Hero from "@/components/shop/Hero";
+import Catalog from "@/components/shop/Catalog";
+import ProductDialog from "@/components/shop/ProductDialog";
+import CartDrawer from "@/components/shop/CartDrawer";
+import Footer from "@/components/shop/Footer";
+import { FilterState, defaultFilters } from "@/components/shop/Filters";
+import { Gender, Product } from "@/data/products";
 
 const Index = () => {
+  const [filters, setFilters] = useState<FilterState>(defaultFilters);
+  const [search, setSearch] = useState("");
+  const [product, setProduct] = useState<Product | null>(null);
+
+  const goCatalog = (gender: Gender | "all", onlyNew = false) => {
+    setFilters({ ...defaultFilters, gender, onlyNew });
+    document.getElementById("catalog")?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  const onSearch = (q: string) => {
+    setSearch(q);
+    if (q) document.getElementById("catalog")?.scrollIntoView({ behavior: "smooth" });
+  };
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4 color-black text-black">Добро пожаловать!</h1>
-        <p className="text-xl text-gray-600">тут будет отображаться ваш проект</p>
+    <CartProvider>
+      <div className="min-h-screen bg-background">
+        <Header onNavigate={goCatalog} onSearch={onSearch} />
+        <main>
+          <Hero onOpenProduct={setProduct} />
+          <Catalog filters={filters} setFilters={setFilters} search={search} onOpenProduct={setProduct} />
+        </main>
+        <Footer />
+        <ProductDialog product={product} onClose={() => setProduct(null)} />
+        <CartDrawer />
       </div>
-      <span className="absolute bottom-8 left-1/2 -translate-x-1/2 inline-block bg-[#FF6637] text-white text-sm px-4 py-2 rounded-full whitespace-nowrap">
-        Подождите 5 минут, Юра создает первую версию проекта с нуля
-      </span>
-    </div>
+    </CartProvider>
   );
 };
 

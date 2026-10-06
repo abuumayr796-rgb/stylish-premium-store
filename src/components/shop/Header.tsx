@@ -2,6 +2,7 @@ import { useState } from "react";
 import Icon from "@/components/ui/icon";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet";
 import { useCart } from "@/context/CartContext";
+import { useShopData } from "@/context/ShopDataContext";
 import { Gender } from "@/data/products";
 
 interface Props {
@@ -11,6 +12,7 @@ interface Props {
 
 const Header = ({ onNavigate, onSearch }: Props) => {
   const { count, setOpen } = useCart();
+  const { t } = useShopData();
   const [searchOpen, setSearchOpen] = useState(false);
   const [q, setQ] = useState("");
   const [menuOpen, setMenuOpen] = useState(false);
@@ -31,7 +33,7 @@ const Header = ({ onNavigate, onSearch }: Props) => {
     <header className="sticky top-0 z-40 bg-background px-3 pt-3 md:px-4 md:pt-4">
       <div className="flex h-[54px] items-center rounded-[10px] bg-card px-5 font-display font-medium md:px-12">
         <a href="#top" className="text-[1.6em] font-semibold tracking-[-0.02em] leading-none">
-          норд
+          {t("brand.logo")}
         </a>
 
         {searchOpen ? (

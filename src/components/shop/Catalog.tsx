@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
-import { PRODUCTS, Product } from "@/data/products";
+import { Product } from "@/data/products";
+import { useShopData } from "@/context/ShopDataContext";
 import Filters, { FilterState, defaultFilters, PRICE_MIN, PRICE_MAX } from "./Filters";
 import ProductCard from "./ProductCard";
 import Icon from "@/components/ui/icon";
@@ -16,6 +17,7 @@ interface Props {
 type Sort = "popular" | "cheap" | "expensive" | "new";
 
 const Catalog = ({ filters, setFilters, search, onOpenProduct }: Props) => {
+  const { products: PRODUCTS, t } = useShopData();
   const [sort, setSort] = useState<Sort>("popular");
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -26,7 +28,8 @@ const Catalog = ({ filters, setFilters, search, onOpenProduct }: Props) => {
       if (filters.categories.length && !filters.categories.includes(p.category)) return false;
       if (filters.sizes.length && !filters.sizes.some((s) => p.sizes.includes(s))) return false;
       if (filters.colors.length && !filters.colors.some((c) => p.colors.some((pc) => pc.name === c))) return false;
-      if (p.price < filters.price[0] || p.price > filters.price[1]) return false;
+      if (filters.price[0] > PRICE_MIN && p.price < filters.price[0]) return false;
+      if (filters.price[1] < PRICE_MAX && p.price > filters.price[1]) return false;
       if (filters.onlyNew && p.badge !== "Новинка") return false;
       if (q && !(`${p.name} ${p.category} ${p.material}`.toLowerCase().includes(q))) return false;
       return true;
@@ -37,7 +40,7 @@ const Catalog = ({ filters, setFilters, search, onOpenProduct }: Props) => {
     if (sort === "new") sorted.sort((a, b) => Number(b.badge === "Новинка") - Number(a.badge === "Новинка"));
     if (sort === "popular") sorted.sort((a, b) => Number(b.badge === "Бестселлер") - Number(a.badge === "Бестселлер"));
     return sorted;
-  }, [filters, sort, search]);
+  }, [filters, sort, search, PRODUCTS]);
 
   const activeCount =
     (filters.gender !== "all" ? 1 : 0) +
@@ -51,9 +54,9 @@ const Catalog = ({ filters, setFilters, search, onOpenProduct }: Props) => {
     <section id="catalog" className="scroll-mt-20 px-3 pt-4 md:px-4">
       <div className="mb-4 flex flex-col gap-4 rounded-[10px] bg-card px-5 py-6 md:flex-row md:items-end md:justify-between md:px-12 md:py-10">
         <div>
-          <p className="font-display text-sm font-medium uppercase tracking-[0.12em] text-muted-foreground">Каталог</p>
+          <p className="font-display text-sm font-medium uppercase tracking-[0.12em] text-muted-foreground">{t("catalog.label")}</p>
           <h2 className="mt-2 font-display text-4xl font-medium tracking-[-0.03em] md:text-6xl">
-            {filters.gender === "all" ? "Вся коллекция" : filters.gender}
+            {filters.gender === "all" ? t("catalog.title") : filters.gender}
           </h2>
         </div>
         <div className="flex items-center gap-2">

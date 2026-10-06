@@ -20,7 +20,7 @@ const ProductDialog = ({ product, onClose }: Props) => {
   useEffect(() => {
     if (product) {
       setSize(null);
-      setColor(product.colors[0].name);
+      setColor(product.colors[0]?.name ?? "");
       setError(false);
     }
   }, [product]);

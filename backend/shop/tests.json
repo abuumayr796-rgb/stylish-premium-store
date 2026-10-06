@@ -1,0 +1,6 @@
+{
+  "tests": [
+    {"name": "Публичные товары", "method": "GET", "path": "/?action=public", "expectedStatus": 200},
+    {"name": "Админка без пароля", "method": "GET", "path": "/?action=admin", "expectedStatus": 401}
+  ]
+}

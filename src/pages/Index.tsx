@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { CartProvider } from "@/context/CartContext";
+import { ShopDataProvider } from "@/context/ShopDataContext";
 import Header from "@/components/shop/Header";
 import Hero from "@/components/shop/Hero";
 import Catalog from "@/components/shop/Catalog";
@@ -25,6 +26,7 @@ const Index = () => {
   };
 
   return (
+    <ShopDataProvider>
     <CartProvider>
       <div className="min-h-screen bg-background">
         <Header onNavigate={goCatalog} onSearch={onSearch} />
@@ -37,6 +39,7 @@ const Index = () => {
         <CartDrawer />
       </div>
     </CartProvider>
+    </ShopDataProvider>
   );
 };
 
